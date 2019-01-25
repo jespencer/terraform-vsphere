@@ -34,6 +34,10 @@ variable "vsphere_vm_folder" {
   description = "In which folder the VM will be store"
 }
 
+variable "vsphere_vm_count" {
+  description = "How many machines to spin up"
+}
+
 variable "vsphere_cluster" {
   description = "In which cluster the VM will be deployed"
 }

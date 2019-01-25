@@ -38,19 +38,19 @@ data "vsphere_virtual_machine" "template" {
 #===============================================================================
 # vSphere Resources
 #===============================================================================
-# Create a vSphere VM folder #
-resource "vsphere_folder" "terraform-folder" {
-  path          = "${var.vsphere_vm_folder}"
-  type          = "vm"
-  datacenter_id = "${data.vsphere_datacenter.dc.id}"
-}
+# Create a vSphere VM folder 
+#resource "vsphere_folder" "terraform-folder" {
+#  path          = "${var.vsphere_vm_folder}"
+#  type          = "vm"
+#  datacenter_id = "${data.vsphere_datacenter.dc.id}"
+#}
 
 resource "vsphere_virtual_machine" "vm" {
-  count = "3"
+  count            = "${var.vsphere_vm_count}"
   name             = "${var.vsphere_vm_name}${count.index + 1}"
   resource_pool_id = "${data.vsphere_compute_cluster.cluster.resource_pool_id}"
   datastore_id     = "${data.vsphere_datastore.datastore.id}"
-  folder           = "${vsphere_folder.terraform-folder.path}"
+  folder           = "${var.vsphere_vm_folder}"
 
   # VM resources #
   num_cpus = "${var.vsphere_vcpu_number}"
@@ -78,7 +78,7 @@ resource "vsphere_virtual_machine" "vm" {
     template_uuid = "${data.vsphere_virtual_machine.template.id}"
     customize {
       linux_options {
-        host_name = "${var.vsphere_vm_name}"
+        host_name = "${var.vsphere_vm_name}${count.index + 1}"
         domain    = "${var.vsphere_domain}"
         time_zone = "${var.vsphere_time_zone}"
       }
